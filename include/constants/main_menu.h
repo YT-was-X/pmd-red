@@ -33,6 +33,7 @@ enum MainMenuScreens
     MENU_DEBUG_FIELD_SCRIPT,
     MENU_DEBUG_DEBUG_MENU,
     MENU_DEBUG_UNKNOWN_1,
+    MENU_TRANSFER_TO_SKY = 0x50, // Not in the original game
     MENU_NO_SCREEN_CHANGE = 65500 // (s16)-36
 };
 

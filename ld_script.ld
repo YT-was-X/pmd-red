@@ -904,6 +904,11 @@ SECTIONS {
         *libc.a:locale.o(.rodata);
         *libc.a:mprec.o(.rodata);
         *libc.a:syscalls.o(.rodata);
+        /* Explorers of Sky transfer, not in the original game. Placed last so the rest of the ROM doesn't move. */
+        src/transfer_password.o(.text);
+        src/transfer_password.o(.rodata);
+        src/sky_transfer_menu.o(.text);
+        src/sky_transfer_menu.o(.rodata);
 		. = ALIGN(4);
     } > ROM =0
 

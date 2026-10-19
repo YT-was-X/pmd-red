@@ -10,6 +10,7 @@
 #include "menu_input.h"
 #include "save.h"
 #include "text_1.h"
+#include "transfer_password.h"
 
 static EWRAM_INIT MainMenu2Work *sUnknown_203B34C = {NULL};
 static EWRAM_INIT u32 sUnknown_203B350 = {MENU_DEBUG};
@@ -18,6 +19,7 @@ static EWRAM_INIT u32 sUnknown_203B354 = {MENU_SEND_ITEMS};
 #include "data/main_menu2.h"
 
 static void SetMainMenuItems(void);
+static void SetMainMenuItemsWithTransfer(const WindowTemplate *window, const MenuItem *menuItems);
 static bool8 SetMainMenuText(void);
 
 static void sub_803623C(void);
@@ -99,6 +101,7 @@ u32 UpdateMainMenu(void)
                 case MENU_DUAL_SLOT:
                 case MENU_WIRELESS_COMMS:
                 case MENU_DEBUG:
+                case MENU_TRANSFER_TO_SKY:
                     sUnknown_203B350 = nextMenu;
                     break;
             }
@@ -199,6 +202,11 @@ static bool8 SetMainMenuText(void)
             // It won't be in the release version
             SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 2, &sUnknown_80E5CB4, sUnknown_80E5D48, FALSE, 0, FALSE);
             break;
+        case MENU_TRANSFER_TO_SKY:
+            // Take your hero, partner and money
+            // to Explorers of Sky
+            SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 2, &sUnknown_80E5CB4, sTransferDescription, FALSE, 0, FALSE);
+            break;
         default:
             break;
     }
@@ -230,7 +238,7 @@ static void SetMainMenuItems(void)
                     // Friend Rescue
                     // Trade Items
                     // Wonder Mail
-                    SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5A78, sUnknown_80E5C18, TRUE, sUnknown_203B350, TRUE);
+                    SetMainMenuItemsWithTransfer(&sUnknown_80E5A78, sUnknown_80E5C18);
                 }
                 else {
                     // Revive Team
@@ -238,7 +246,7 @@ static void SetMainMenuItems(void)
                     // Adventure Log
                     // Friend Rescue
                     // Trade Items
-                    SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5BC4, sUnknown_80E5BDC, TRUE, sUnknown_203B350, TRUE);
+                    SetMainMenuItemsWithTransfer(&sUnknown_80E5BC4, sUnknown_80E5BDC);
                 }
             }
             else {
@@ -249,7 +257,7 @@ static void SetMainMenuItems(void)
                     // Friend Rescue
                     // Trade Items
                     // Wonder Mail
-                    SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5A78, sUnknown_80E5AFC, TRUE, sUnknown_203B350, TRUE);
+                    SetMainMenuItemsWithTransfer(&sUnknown_80E5A78, sUnknown_80E5AFC);
                 }
                 else {
                     // Continue
@@ -257,7 +265,7 @@ static void SetMainMenuItems(void)
                     // Adventure Log
                     // Friend Rescue
                     // Trade Items
-                    SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5A60, sUnknown_80E5A90, TRUE, sUnknown_203B350, TRUE);
+                    SetMainMenuItemsWithTransfer(&sUnknown_80E5A60, sUnknown_80E5A90);
                 }
             }
         }
@@ -269,7 +277,7 @@ static void SetMainMenuItems(void)
                     // Friend Rescue
                     // Trade Items
                     // Wonder Mail
-                SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5A78, sUnknown_80E5B8C, TRUE, sUnknown_203B350, TRUE);
+                SetMainMenuItemsWithTransfer(&sUnknown_80E5A78, sUnknown_80E5B8C);
             }
             else {
                     // Awaiting Rescue
@@ -277,7 +285,7 @@ static void SetMainMenuItems(void)
                     // Adventure Log
                     // Friend Rescue
                     // Trade Items
-                SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E5B34, sUnknown_80E5B4C, TRUE, sUnknown_203B350, TRUE);
+                SetMainMenuItemsWithTransfer(&sUnknown_80E5B34, sUnknown_80E5B4C);
             }
         }
     }
@@ -286,6 +294,28 @@ static void SetMainMenuItems(void)
         // Adventure Log
         SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_80E59E0, sUnknown_80E59F8, TRUE, sUnknown_203B350, TRUE);
     }
+}
+
+// Adds "Transfer" to the end of the menu once the story has been beaten
+static void SetMainMenuItemsWithTransfer(const WindowTemplate *window, const MenuItem *menuItems)
+{
+    s32 i;
+
+    if (!CanTransferToSky()) {
+        SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, window, menuItems, TRUE, sUnknown_203B350, TRUE);
+        return;
+    }
+
+    for (i = 0; menuItems[i].text != NULL; i++)
+        sUnknown_203B34C->transferMenuItems[i] = menuItems[i];
+    sUnknown_203B34C->transferMenuItems[i] = sTransferMenuItem;
+    sUnknown_203B34C->transferMenuItems[i + 1] = menuItems[i]; // Terminator
+
+    // Each item is 12 pixels tall
+    sUnknown_203B34C->transferMenuWindow = *window;
+    sUnknown_203B34C->transferMenuWindow.height = ((i + 1) * 12 + 7) / 8;
+    sUnknown_203B34C->transferMenuWindow.totalHeight = sUnknown_203B34C->transferMenuWindow.height;
+    SetMenuItems(sUnknown_203B34C->unk4, &sUnknown_203B34C->unk144, 0, &sUnknown_203B34C->transferMenuWindow, sUnknown_203B34C->transferMenuItems, TRUE, sUnknown_203B350, TRUE);
 }
 
 bool8 sub_80363E0(void)

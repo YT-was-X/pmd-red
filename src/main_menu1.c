@@ -17,6 +17,7 @@
 #include "other_menus1.h"
 #include "rescue_password_menu.h"
 #include "save_menu.h"
+#include "sky_transfer_menu.h"
 #include "text_1.h"
 #include "trade_items_menu.h"
 #include "unk_menu_203B360.h"
@@ -122,6 +123,9 @@ void SetUpMenu(void)
         case MENU_DEBUG:
             CreateDebugMenu();
             break;
+        case MENU_TRANSFER_TO_SKY:
+            CreateSkyTransferMenu();
+            break;
     }
 
     sMainMenu->currMenu = sMainMenu->nextMenu;
@@ -202,6 +206,9 @@ s32 UpdateMenu(void)
         case MENU_DEBUG:
             nextMenu = UpdateDebugMenu();
             break;
+        case MENU_TRANSFER_TO_SKY:
+            nextMenu = UpdateSkyTransferMenu();
+            break;
     }
 
     if (nextMenu != MENU_NO_SCREEN_CHANGE)
@@ -268,6 +275,9 @@ void CleanUpMenu(void)
             break;
         case MENU_DEBUG:
             DeleteDebugMenu();
+            break;
+        case MENU_TRANSFER_TO_SKY:
+            CleanSkyTransferMenu();
             break;
     }
 

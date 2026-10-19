@@ -220,6 +220,14 @@ static const MenuItem sUnknown_80E5FCC[] = {
     {NULL, 0xFFDD}
 };
 
+static const MenuItem sTransferMenuItem = {_("Transfer"), MENU_TRANSFER_TO_SKY};
+
+static const MenuItem sTransferDescription[] = {
+    {_("Take your hero, partner and money"), 0xFFDE},
+    {_("to {COLOR CYAN_G}Explorers of Sky{RESET}."), 0xFFDE},
+    {NULL, 0xFFDD}
+};
+
 static const MenuItem sUnknown_80E6030[] = {
     {_("Using wireless communication, you can"), 0xFFDE},
     {_("go on an adventure to unknown worlds."), 0xFFDE},
